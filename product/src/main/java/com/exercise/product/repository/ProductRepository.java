@@ -8,5 +8,6 @@ import com.exercise.product.model.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-	
+	// Could write custom methods to perform CRUD operations
+	// Currently we will be using findAll() to fetch all the details from DB
 }

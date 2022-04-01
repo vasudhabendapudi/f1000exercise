@@ -29,6 +29,8 @@ public class ProductUtility {
 	 */
 	public List<ProductVO> getProducts() {
 		List<ProductVO> productVOList = new ArrayList<ProductVO>();
+		
+		// Service call to fetch the details from DB
 	    List<Product> productList =  productService.getProducts();
 	    
 	    ProductVO productVO = null;
@@ -41,8 +43,10 @@ public class ProductUtility {
 	    		productVO.setProdId(prod.getProductId());
 	    		productVO.setProdName(prod.getProductName());
 	    		productVO.setProdDesc(prod.getProductDesc());
+	    		
 	    		priceMap.put(prod.getProductCurrency(), prod.getProductPrice());  
 	    		productVO.setPriceMap(priceMap);
+	    		
 	    		productVOList.add(productVO);
 	    	}
 	    }
@@ -57,10 +61,12 @@ public class ProductUtility {
 	 */
 	public List<ProductVO> getProductsWithCurr() {
 		List<ProductVO> productVOList = new ArrayList<ProductVO>();
+		
+		// Service call to fetch the details from DB
 	    List<Product> productList =  productService.getProducts();
 	    
 	    String uri = "http://data.fixer.io/api/latest?access_key=b5d6d6de407990d8a4e1a3738c60e4b0";
-	    // Move the hard coded url to properties file
+	    // Move the hard coded uri to properties file
 	    RestTemplate restTemplate = null; 
 	    String exchangeRateStr = null;
 	    JSONObject exchangeRateJson = null;
@@ -92,14 +98,17 @@ public class ProductUtility {
 	    		productVO.setProdId(prod.getProductId());
 	    		productVO.setProdName(prod.getProductName());
 	    		productVO.setProdDesc(prod.getProductDesc());	    
+	    		/* Added this piece of code to display the price value atleast in base currency as stored in the DB
+	    		 * Even when exchange rates are not available
+	    		 */
 	    		priceMap.put(prod.getProductCurrency(), prod.getProductPrice()); 
 	    		if(exchangeRates != null )  {
 	    			priceMap.put("EUR", prod.getProductPrice() * exchangeRates.getDouble("EUR"));
 	    	    	priceMap.put("GBP", prod.getProductPrice() * exchangeRates.getDouble("GBP"));
 	    	    	priceMap.put("INR", prod.getProductPrice() * exchangeRates.getDouble("INR"));
 	    	    	priceMap.put("USD", prod.getProductPrice() * exchangeRates.getDouble("USD"));
-	    	    }
-    			// Write code to trim the converted value as per requirement	    			
+	    	    	// Write code to trim/roundoff the converted value as per requirement
+	    	    }    				    			
 	    		
 	    		productVO.setPriceMap(priceMap);
 	    		productVOList.add(productVO);

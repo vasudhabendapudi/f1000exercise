@@ -25,6 +25,9 @@ public class Product {
 	@Column(name = "product_price")
 	private Double productPrice;
 	
+	/*
+	 * This is the default currency in which products are stored
+	 */
 	@Column(name = "product_currency")
 	private String productCurrency;
 	
