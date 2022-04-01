@@ -101,14 +101,17 @@ public class ProductUtility {
 	    		/* Added this piece of code to display the price value atleast in base currency as stored in the DB
 	    		 * Even when exchange rates are not available
 	    		 */
-	    		priceMap.put(prod.getProductCurrency(), prod.getProductPrice()); 
+	    		priceMap.put(prod.getProductCurrency(), prod.getProductPrice());
+	    		
 	    		if(exchangeRates != null )  {
-	    			priceMap.put("EUR", prod.getProductPrice() * exchangeRates.getDouble("EUR"));
-	    	    	priceMap.put("GBP", prod.getProductPrice() * exchangeRates.getDouble("GBP"));
-	    	    	priceMap.put("INR", prod.getProductPrice() * exchangeRates.getDouble("INR"));
-	    	    	priceMap.put("USD", prod.getProductPrice() * exchangeRates.getDouble("USD"));
-	    	    	// Write code to trim/roundoff the converted value as per requirement
+	    			priceMap.put("EUR", exchangeRates.has("EUR") ? prod.getProductPrice() * exchangeRates.getDouble("EUR") : 0.0);
+	    	    	priceMap.put("GBP", exchangeRates.has("GBP") ? prod.getProductPrice() * exchangeRates.getDouble("GBP") : 0.0);
+	    	    	priceMap.put("INR", exchangeRates.has("INR") ? prod.getProductPrice() * exchangeRates.getDouble("INR") : 0.0);
+	    	    	priceMap.put("USD", exchangeRates.has("USD") ? prod.getProductPrice() * exchangeRates.getDouble("USD") : 0.0);
+	    	    	// If any specific rate is not available, then return default value.
+	    	    	priceMap.put("ZZT", exchangeRates.has("ZZT") ? prod.getProductPrice() * exchangeRates.getDouble("ZZT") : 0.0);
 	    	    }    				    			
+	    		// Write code to trim/roundoff the converted value as per requirement
 	    		
 	    		productVO.setPriceMap(priceMap);
 	    		productVOList.add(productVO);
